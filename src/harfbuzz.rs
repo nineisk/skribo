@@ -5,7 +5,7 @@ use euclid::Vector2D;
 use harfbuzz::sys::{
     hb_buffer_get_glyph_infos,
     hb_buffer_get_glyph_positions, hb_face_create, hb_face_destroy, hb_face_reference, hb_face_t,
-    hb_font_create, hb_font_destroy, hb_position_t, hb_shape,
+    hb_font_create, hb_font_destroy, hb_position_t, hb_shape, hb_ot_font_set_funcs,
 };
 use harfbuzz::sys::{HB_SCRIPT_DEVANAGARI};
 use harfbuzz::{Blob, Buffer, Direction, Language};
@@ -58,6 +58,7 @@ pub fn layout_run(style: &TextStyle, font: &FontRef, text: &str) -> Layout {
     let hb_face = HbFace::new(font);
     unsafe {
         let hb_font = hb_font_create(hb_face.hb_face);
+        hb_ot_font_set_funcs(hb_font);
         hb_shape(hb_font, b.as_ptr(), std::ptr::null(), 0);
         hb_font_destroy(hb_font);
         let mut n_glyph = 0;
